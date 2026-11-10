@@ -1,81 +1,77 @@
-# sustainable-farming-impact-dashboard
-# 🌱 Sustainable Farming Impact Dashboard
+# Sustainable Farming Impact Dashboard
 
-A data analytics project that explores **crop productivity and yield efficiency** to support insights into **sustainable agriculture practices** using real-world crop production data.
+Cleans and analyses crop production data to compare **yield efficiency** across crops — production per hectare rather than raw totals, which is what makes the comparison meaningful.
 
-This project combines **data cleaning with Python** and **interactive visualization with Power BI** to highlight trends in agricultural yield across crops.
+## Why yield per hectare
 
----
+Production totals favour crops grown on more land. Dividing production by area gives a like-for-like comparison, so a small high-efficiency crop is not buried under a large low-efficiency one.
 
-## 🎯 Project Objective
+## Project structure
 
-- Analyze crop production data to understand **yield per hectare**
-- Identify **high-performing and low-performing crops**
-- Present insights through a **clean, interactive Power BI dashboard**
-- Demonstrate an end-to-end **data analytics workflow**
-
----
-
-## 🛠 Tools & Technologies
-
-- **Python** (Pandas) – Data cleaning & preprocessing  
-- **Power BI** – Interactive dashboard & visual analysis  
-- **Git & GitHub** – Version control & project hosting  
-- **CSV Dataset** – Crop production data  
-
----
-## 📂 Project Structure
+```
 sustainable-farming-impact-dashboard/
-│
-├── Crop Production data.csv # Raw dataset
 ├── scripts/
-│ └── data_cleaning.py # Python data cleaning script
-├── assets/ # (optional) Dashboard screenshots
-├── README.md
-## 📂 Project Structure
+│   └── data_cleaning.py       # the cleaning pipeline
+├── data/
+│   ├── raw/                   # source dataset goes here (not committed)
+│   └── processed/             # cleaned output (not committed)
+├── requirements.txt
+├── .gitignore
+└── README.md
+```
 
+## How to run
 
----
+1. Clone the repo and enter the folder:
 
-## 🧹 Data Cleaning (Python)
+   ```bash
+   git clone https://github.com/sssfullstack007/sustainable-farming-impact-dashboard.git
+   cd sustainable-farming-impact-dashboard
+   ```
 
-Key cleaning steps performed:
-- Removed irrelevant / inconsistent values
-- Standardized column names
-- Handled missing and invalid entries
-- Prepared clean dataset for visualization
+2. Install dependencies:
 
-Script:  
-`scripts/data_cleaning.py`
+   ```bash
+   py -m pip install -r requirements.txt
+   ```
 
----
+3. Put the source dataset in `data/raw/` under its original name,
+   `Crop Production data.csv`. It is not committed to this repo because it is
+   18 MB; download it from the source where you obtained it and place it there.
 
-## 📊 Dashboard Insights (Power BI)
+4. Run the pipeline:
 
-Key visuals include:
-- **Average Yield per Hectare by Crop**
-- **Top 10 Crops by Yield (Top-N filter)**
-- Clear comparison of crop productivity
-- Scaled visuals for better readability
+   ```bash
+   py scripts/data_cleaning.py
+   ```
 
-> The dashboard helps quickly identify crops with significantly higher yield efficiency.
+5. The cleaned file appears at `data/processed/crop_production_clean.csv`.
 
----
+The script never modifies the raw file, so it can be re-run safely.
 
-## 📌 Key Takeaways
+## What the script actually does
 
-- Crop yields vary **drastically**, making visualization choices critical
-- Applying **Top-N filtering** improves interpretability
-- Data cleaning is essential before any meaningful analysis
-- Power BI is effective for storytelling with agricultural data
+- Standardizes column names (lowercase, spaces to underscores)
+- Validates that `area` and `production` exist, with a clear error if not
+- Drops rows missing `area` or `production`
+- Removes zero and negative area/production values
+- Adds `yield_per_hectare = production / area`
+- Writes to a separate processed file, creating folders as needed
 
----
+Anything not implemented in code is not claimed here.
 
-## 🚀 How to Run
+## Findings
 
-1. Clone the repository  
-```bash
-git clone https://github.com/sssfullstack007/sustainable-farming-impact-dashboard.git
-git add README.md
-git commit -m "Add project README"
-git push
+Add three to five real observations from your own analysis here, for example:
+
+> The top 10 crops by total production and by yield per hectare share only four crops,
+> so a dashboard's ranking depends heavily on which metric is displayed.
+
+## Notes
+
+- The raw dataset is deliberately excluded from version control to keep the repo small.
+- Earlier commits contain the raw CSV; repository history has not been rewritten.
+
+## Skills demonstrated
+
+Python, pandas, data cleaning, reproducible pipelines, Git.

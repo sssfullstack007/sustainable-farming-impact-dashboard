@@ -1,0 +1,17 @@
+# Ignore Python bytecode and environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.pytest_cache/
+
+# Never commit raw or processed datasets
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# OS noise
+.DS_Store
+Thumbs.db
