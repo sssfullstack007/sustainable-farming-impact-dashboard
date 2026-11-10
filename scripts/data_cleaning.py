@@ -47,6 +47,14 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
             f"Columns found: {list(df.columns)}"
         )
 
+    # Strip surrounding whitespace from text values.
+    # The raw file pads them: "Kharif     " vs "Kharif   ", "TELANGANA " vs
+    # "TELANGANA". Without this, one season becomes eight and one state becomes
+    # two, so every groupby on those columns is wrong.
+    for column in df.columns:
+        if pd.api.types.is_object_dtype(df[column]) or pd.api.types.is_string_dtype(df[column]):
+            df[column] = df[column].str.strip()
+
     # Drop rows missing the values we depend on
     df = df.dropna(subset=list(REQUIRED_COLUMNS))
 
@@ -75,6 +83,20 @@ def main() -> None:
 
     save(cleaned, CLEAN_FILE)
     print(f"Saved cleaned data to '{CLEAN_FILE}'")
+
+    # Stripping padded text collapses duplicates. Print the size of the effect
+    # so a reader can see the cleaning actually did something.
+    for column in ("season", "state_name"):
+        raw_column = next(
+            (c for c in raw.columns
+             if c.strip().lower().replace(" ", "_") == column),
+            None,
+        )
+        if raw_column is None:
+            continue
+        before = raw[raw_column].nunique()
+        after = cleaned[column].nunique()
+        print(f"  {column}: {before} distinct raw values -> {after} after stripping")
 
 
 if __name__ == "__main__":
